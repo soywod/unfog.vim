@@ -1,45 +1,45 @@
-let s:assign = function('kronos#utils#assign')
-let s:sum = function('kronos#utils#sum')
+let s:assign = function('unfog#utils#assign')
+let s:sum = function('unfog#utils#sum')
 let s:strftime = function('strftime', ['%c'])
-let s:duration = function('kronos#utils#date#duration')
-let s:relative = function('kronos#utils#date#relative')
-let s:match_one = function('kronos#utils#match_one')
+let s:duration = function('unfog#utils#date#duration')
+let s:relative = function('unfog#utils#date#relative')
+let s:match_one = function('unfog#utils#match_one')
 
 " --------------------------------------------------------------------- # CRUD #
 
-function! kronos#task#create(ids, task)
+function! unfog#task#create(ids, task)
   let task = copy(a:task)
 
-  for tag in copy(g:kronos_context)
+  for tag in copy(g:unfog_context)
     if index(task.tags, tag) == -1
       call add(task.tags, tag)
     endif
   endfor
 
-  let task.id = has_key(task, 'id') ? task.id : kronos#task#generate_id(a:ids)
+  let task.id = has_key(task, 'id') ? task.id : unfog#task#generate_id(a:ids)
   let task.index = -(localtime() . task.id)
 
-  if g:kronos_backend == 'taskwarrior'
-    let task.id = kronos#backends#taskwarrior#create(task)
+  if g:unfog_backend == 'taskwarrior'
+    let task.id = unfog#backends#taskwarrior#create(task)
   endif
 
   return task
 endfunction
 
-function! kronos#task#read(id)
-  let tasks = kronos#database#read().tasks
-  let position = kronos#task#get_position(tasks, a:id)
+function! unfog#task#read(id)
+  let tasks = unfog#database#read().tasks
+  let position = unfog#task#get_position(tasks, a:id)
 
   return tasks[position]
 endfunction
 
-function! kronos#task#read_all()
-  return kronos#database#read().tasks
+function! unfog#task#read_all()
+  return unfog#database#read().tasks
 endfunction
 
-function! kronos#task#update(prev_task, next_task)
-  if g:kronos_backend == 'taskwarrior'
-    call kronos#backends#taskwarrior#update(a:prev_task, a:next_task)
+function! unfog#task#update(prev_task, next_task)
+  if g:unfog_backend == 'taskwarrior'
+    call unfog#backends#taskwarrior#update(a:prev_task, a:next_task)
   endif
 
   return s:assign(a:prev_task, a:next_task)
@@ -47,23 +47,13 @@ endfunction
 
 " --------------------------------------------------------------------- # List #
 
-function! kronos#task#list()
-  let tasks = kronos#database#read().tasks
-
-  if (!empty(g:kronos_context))
-    let tasks = filter(copy(tasks), 's:match_one(v:val.tags, g:kronos_context)')
-  endif
-
-  if (g:kronos_hide_done)
-    let tasks = filter(copy(tasks), 'v:val.done == 0')
-  endif
-
-  return tasks
+function! unfog#task#list()
+  return eval(system("unfog list --json"))
 endfunction
 
 " ------------------------------------------------------------------- # Toggle #
 
-function! kronos#task#toggle(task)
+function! unfog#task#toggle(task)
   let update = a:task.active ? {
     \'active': 0,
     \'stop': a:task.stop + [localtime()],
@@ -72,8 +62,8 @@ function! kronos#task#toggle(task)
     \'start': a:task.start + [localtime()],
   \}
 
-  if g:kronos_backend == 'taskwarrior'
-    call kronos#backends#taskwarrior#toggle(a:task)
+  if g:unfog_backend == 'taskwarrior'
+    call unfog#backends#taskwarrior#toggle(a:task)
   endif
 
   return s:assign(a:task, update)
@@ -81,11 +71,11 @@ endfunction
 
 " --------------------------------------------------------------------- # Done #
 
-function! kronos#task#done(task)
+function! unfog#task#done(task)
   let date_ref = localtime()
 
-  if g:kronos_backend == 'taskwarrior'
-    call kronos#backends#taskwarrior#done(a:task.id)
+  if g:unfog_backend == 'taskwarrior'
+    call unfog#backends#taskwarrior#done(a:task.id)
   endif
 
   let task = s:assign(a:task, {
@@ -113,7 +103,7 @@ function! s:throw_if_exists(task, ids)
   endfor
 endfunction
 
-function! kronos#task#generate_id(ids)
+function! unfog#task#generate_id(ids)
   let id_new = 1
 
   while index(a:ids, id_new) != -1
@@ -123,7 +113,7 @@ function! kronos#task#generate_id(ids)
   return id_new
 endfunction
 
-function! kronos#task#get_position(tasks, id)
+function! unfog#task#get_position(tasks, id)
   let position = 0
 
   for task in a:tasks
@@ -134,7 +124,7 @@ function! kronos#task#get_position(tasks, id)
   throw 'task not found'
 endfunction
 
-function! kronos#task#to_info_string(task)
+function! unfog#task#to_info_string(task)
   let task = copy(a:task)
 
   let starts = task.start
@@ -149,14 +139,14 @@ function! kronos#task#to_info_string(task)
   return task
 endfunction
 
-function! kronos#task#to_list_string(task)
+function! unfog#task#to_list_string(task)
   let task = copy(a:task)
   let now = localtime()
 
-  let task.tags   = join(task.tags, ' ')
-  let task.active = task.active ? s:relative(now, task.start[-1]) : ''
-  let task.done   = task.done   ? s:relative(now, task.done)      : ''
-  let task.due    = task.due    ? s:relative(now, task.due)       : ''
+  let task.tags   = join(task.tags, " ")
+  let task.active = task.active ? "✔" : ""
+  " let task.done   = task.done   ? s:relative(now, task.done)      : ''
+  " let task.due    = task.due    ? s:relative(now, task.due)       : ''
 
   return task
 endfunction

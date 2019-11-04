@@ -1,16 +1,16 @@
-let s:assign = function('kronos#utils#assign')
-let s:compose = function('kronos#utils#compose')
-let s:sum = function('kronos#utils#sum')
-let s:trim = function('kronos#utils#trim')
-let s:approx_due = function('kronos#utils#date#approx_due')
-let s:parse_due = function('kronos#utils#date#parse_due')
-let s:worktime = function('kronos#utils#date#worktime')
-let s:duration = function('kronos#utils#date#duration')
-let s:log_error = function('kronos#utils#log#error')
-let s:match_one = function('kronos#utils#match_one')
+let s:assign = function('unfog#utils#assign')
+let s:compose = function('unfog#utils#compose')
+let s:sum = function('unfog#utils#sum')
+let s:trim = function('unfog#utils#trim')
+let s:approx_due = function('unfog#utils#date#approx_due')
+let s:parse_due = function('unfog#utils#date#parse_due')
+let s:worktime = function('unfog#utils#date#worktime')
+let s:duration = function('unfog#utils#date#duration')
+let s:log_error = function('unfog#utils#log#error')
+let s:match_one = function('unfog#utils#match_one')
 
 let s:max_widths = []
-let s:buff_name = 'Kronos'
+let s:buff_name = 'Unfog'
 
 " ------------------------------------------------------------------- # Config #
 
@@ -20,7 +20,7 @@ let s:config = {
     \'keys': ['id', 'desc', 'tags', 'active', 'due', 'done', 'worktime'],
   \},
   \'list': {
-    \'columns': ['id', 'desc', 'tags', 'active', 'due'],
+    \'columns': ['id', 'desc', 'tags', 'active'],
   \},
   \'worktime': {
     \'columns': ['date', 'worktime'],
@@ -42,16 +42,16 @@ let s:config = {
 
 " --------------------------------------------------------------------- # Info #
 
-function! kronos#ui#info()
+function! unfog#ui#info()
   let task = s:get_focused_task()
-  let task = kronos#task#to_info_string(task)
+  let task = unfog#task#to_info_string(task)
   let lines = map(
     \copy(s:config.info.keys),
     \'{"key": s:config.labels[v:val], "value": task[v:val]}',
   \)
 
-  silent! bwipeout 'Kronos Info'
-  silent! botright new Kronos Info
+  silent! bwipeout 'Unfog Info'
+  silent! botright new Unfog Info
 
   call append(0, s:render('info', lines))
   normal! ddgg
@@ -60,17 +60,17 @@ endfunction
 
 " --------------------------------------------------------------------- # List #
 
-function! kronos#ui#list()
+function! unfog#ui#list()
   let prev_pos = getpos('.')
 
-  call s:refresh_buff_name()
-  let tasks = kronos#task#list()
-  let lines = map(copy(tasks), 'kronos#task#to_list_string(v:val)')
+  " call s:refresh_buff_name()
+  let tasks = unfog#task#list()
+  let lines = map(copy(tasks), 'unfog#task#to_list_string(v:val)')
 
   redir => buf_list | silent! ls | redir END
   execute 'silent! edit ' . s:buff_name
 
-  if match(buf_list, '"Kronos') > -1
+  if match(buf_list, '"Unfog') > -1
     execute '0,$d'
   endif
 
@@ -84,15 +84,15 @@ endfunction
 
 " ------------------------------------------------------------------- # Toggle #
 
-function! kronos#ui#toggle()
+function! unfog#ui#toggle()
   try
     let task = s:get_focused_task()
-    let tasks = copy(kronos#database#read().tasks)
-    let position = kronos#task#get_position(tasks, task.id)
-    let tasks[position] = kronos#task#toggle(task)
+    let tasks = copy(unfog#database#read().tasks)
+    let position = unfog#task#get_position(tasks, task.id)
+    let tasks[position] = unfog#task#toggle(task)
 
-    call kronos#database#write({'tasks': tasks})
-    call kronos#ui#list()
+    call unfog#database#write({'tasks': tasks})
+    call unfog#ui#list()
   catch 'task not found'
     return s:log_error('task not found')
   catch 'task already active'
@@ -104,11 +104,11 @@ endfunction
 
 " ------------------------------------------------------------------ # Context #
 
-function! kronos#ui#context()
+function! unfog#ui#context()
   try
     let args = input('Go to context: ')
-    let g:kronos_context = split(s:trim(args), ' ')
-    call kronos#ui#list()
+    let g:unfog_context = split(s:trim(args), ' ')
+    call unfog#ui#list()
   catch
     return s:log_error('context failed')
   endtry
@@ -116,10 +116,10 @@ endfunction
 
 " --------------------------------------------------------- # Toggle hide done #
 
-function! kronos#ui#hide_done()
+function! unfog#ui#hide_done()
   try
-    let g:kronos_hide_done = !g:kronos_hide_done
-    call kronos#ui#list()
+    let g:unfog_hide_done = !g:unfog_hide_done
+    call unfog#ui#list()
   catch
     return s:log_error('toggle hide done failed')
   endtry
@@ -127,10 +127,10 @@ endfunction
 
 " ----------------------------------------------------------------- # Worktime #
 
-function! kronos#ui#worktime()
+function! unfog#ui#worktime()
   let args = input('Worktime for: ')
   let [tags, min, max] = s:parse_worktime_args(localtime(), args)
-  let tasks = kronos#task#read_all()
+  let tasks = unfog#task#read_all()
   let worktimes = s:worktime(localtime(), tasks, tags, min, max)
 
   let days  = s:compose('sort', 'keys')(worktimes)
@@ -157,7 +157,7 @@ function! kronos#ui#worktime()
     \? ''
     \: join(map(copy(tags), 'printf(" +%s", v:val)'), '')
 
-  execute 'silent! botright new Kronos Worktime' . tags_str
+  execute 'silent! botright new Unfog Worktime' . tags_str
 
   call append(0, s:render('worktime', lines))
   normal! ddgg
@@ -187,7 +187,7 @@ endfunction
 
 " ---------------------------------------------------------- # Cell management #
 
-function! kronos#ui#select_next_cell()
+function! unfog#ui#select_next_cell()
   normal! f|l
 
   if col('.') == col('$') - 1
@@ -199,7 +199,7 @@ function! kronos#ui#select_next_cell()
   endif
 endfunction
 
-function! kronos#ui#select_prev_cell()
+function! unfog#ui#select_prev_cell()
   if col('.') == 2 && line('.') > 2
     normal! k$T|
   else
@@ -207,16 +207,16 @@ function! kronos#ui#select_prev_cell()
   endif
 endfunction
 
-function! kronos#ui#delete_in_cell()
+function! unfog#ui#delete_in_cell()
   execute printf('normal! %sdt|', col('.') == 1 ? '' : 'T|')
 endfunction
 
-function! kronos#ui#change_in_cell()
-  call kronos#ui#delete_in_cell()
+function! unfog#ui#change_in_cell()
+  call unfog#ui#delete_in_cell()
   startinsert
 endfunction
 
-function! kronos#ui#visual_in_cell()
+function! unfog#ui#visual_in_cell()
   execute printf('normal! %svt|', col('.') == 1 ? '' : 'T|')
 endfunction
 
@@ -229,8 +229,8 @@ function! s:sort_by(col, dir, t1, t2)
   else | return 0 | endif
 endfunction
 
-function kronos#ui#sort(dir)
-  let tasks  = kronos#database#read().tasks
+function unfog#ui#sort(dir)
+  let tasks  = unfog#database#read().tasks
   let line = getline('.')
   let pos = getcurpos()[2] - 1
   let index = len(split(line[pos:], '|'))
@@ -238,15 +238,15 @@ function kronos#ui#sort(dir)
   let col = s:config.list.columns[len(s:config.list.columns) - index]
   let sorted_tasks = sort(copy(tasks), {a, b -> s:sort_by(col, a:dir, a, b)})
 
-  call kronos#database#write({'tasks': sorted_tasks})
-  call kronos#ui#list()
+  call unfog#database#write({'tasks': sorted_tasks})
+  call unfog#ui#list()
   let &modified = 1
 endfunction
 
 " -------------------------------------------------------------- # Parse utils #
 
-function kronos#ui#parse_buffer()
-  let prev_tasks  = kronos#database#read().tasks
+function unfog#ui#parse_buffer()
+  let prev_tasks  = unfog#database#read().tasks
   let next_tasks  = map(getline(2, '$'), 's:parse_buffer_line(v:key, v:val)')
 
   let prev_tasks_id = map(copy(prev_tasks), 'v:val.id')
@@ -258,14 +258,14 @@ function kronos#ui#parse_buffer()
     let next_task = next_tasks[i]
 
     if !has_key(next_task, 'id')
-      let next_tasks[i] = kronos#task#create(tasks_id, next_task)
+      let next_tasks[i] = unfog#task#create(tasks_id, next_task)
       let tasks_id += [next_tasks[i].id]
     elseif !s:exists_in(prev_tasks_id, next_task.id)
-      let next_tasks[i] = kronos#task#create(prev_tasks_id, next_task)
+      let next_tasks[i] = unfog#task#create(prev_tasks_id, next_task)
       let tasks_id += [next_tasks[i].id]
     else
       let prev_task_index = index(prev_tasks_id, next_task.id)
-      let next_tasks[i] = kronos#task#update(
+      let next_tasks[i] = unfog#task#update(
         \prev_tasks[prev_task_index],
         \next_task
       \)
@@ -275,17 +275,17 @@ function kronos#ui#parse_buffer()
   " Mark as done or delete missing ones
   for prev_task in prev_tasks
     if s:exists_in(next_tasks_id, prev_task.id) | continue | endif
-    if !s:match_one(prev_task.tags, g:kronos_context)
+    if !s:match_one(prev_task.tags, g:unfog_context)
       call add(next_tasks, prev_task) | continue
     endif
 
-    if g:kronos_hide_done || !prev_task.done
-      call add(next_tasks, kronos#task#done(prev_task))
+    if g:unfog_hide_done || !prev_task.done
+      call add(next_tasks, unfog#task#done(prev_task))
     endif
   endfor
 
-  call kronos#database#write({'tasks': uniq(next_tasks, 's:uniq_by_id')})
-  call kronos#ui#list()
+  call unfog#database#write({'tasks': uniq(next_tasks, 's:uniq_by_id')})
+  call unfog#ui#list()
   let &modified = 0
 endfunction
 
@@ -316,7 +316,7 @@ function s:parse_buffer_line(index, line)
     let due = s:trim(cells[-1])
 
     try
-      let task = kronos#task#read(id)
+      let task = unfog#task#read(id)
     catch
       let task = {
         \'desc': desc,
@@ -416,7 +416,7 @@ function! s:get_max_widths(tasks, columns)
 endfunction
 
 function! s:get_focused_task()
-  let tasks = kronos#task#list()
+  let tasks = unfog#task#list()
   let index = line('.') - 2
   if  index == -1 | throw 'task not found' | endif
 
@@ -424,14 +424,14 @@ function! s:get_focused_task()
 endfunction
 
 function! s:refresh_buff_name()
-  let buff_name = 'Kronos'
+  let buff_name = 'Unfog'
 
-  if !g:kronos_hide_done
+  if !g:unfog_hide_done
     let buff_name .= '*'
   endif
 
-  if len(g:kronos_context) > 0
-    let tags = map(copy(g:kronos_context), 'printf(" +%s", v:val)')
+  if len(g:unfog_context) > 0
+    let tags = map(copy(g:unfog_context), 'printf(" +%s", v:val)')
     let buff_name .= join(tags, '')
   endif
 
