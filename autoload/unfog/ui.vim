@@ -6,7 +6,8 @@ let s:approx_due = function('unfog#utils#date#approx_due')
 let s:parse_due = function('unfog#utils#date#parse_due')
 let s:worktime = function('unfog#utils#date#worktime')
 let s:duration = function('unfog#utils#date#duration')
-let s:log_error = function('unfog#utils#log#error')
+let s:log = function('unfog#utils#log')
+let s:elog = function('unfog#utils#elog')
 let s:match_one = function('unfog#utils#match_one')
 
 let s:max_widths = []
@@ -87,18 +88,11 @@ endfunction
 function! unfog#ui#toggle()
   try
     let task = s:get_focused_task()
-    let tasks = copy(unfog#database#read().tasks)
-    let position = unfog#task#get_position(tasks, task.id)
-    let tasks[position] = unfog#task#toggle(task)
-
-    call unfog#database#write({'tasks': tasks})
+    let msg = unfog#task#toggle(task)
     call unfog#ui#list()
-  catch 'task not found'
-    return s:log_error('task not found')
-  catch 'task already active'
-    return s:log_error('task already active')
+    call s:log(msg)
   catch
-    return s:log_error('task start failed')
+    call s:elog(v:exception)
   endtry
 endfunction
 
@@ -110,7 +104,7 @@ function! unfog#ui#context()
     let g:unfog_context = split(s:trim(args), ' ')
     call unfog#ui#list()
   catch
-    return s:log_error('context failed')
+    return s:elog('context failed')
   endtry
 endfunction
 
@@ -121,7 +115,7 @@ function! unfog#ui#hide_done()
     let g:unfog_hide_done = !g:unfog_hide_done
     call unfog#ui#list()
   catch
-    return s:log_error('toggle hide done failed')
+    return s:elog('toggle hide done failed')
   endtry
 endfunction
 

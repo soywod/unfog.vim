@@ -1,6 +1,6 @@
 " ------------------------------------------------------------------ # Compose #
 
-function! kronos#utils#compose(...)
+function! unfog#utils#compose(...)
   let funcs = map(reverse(copy(a:000)), 'function(v:val)')
   return function('s:compose', [funcs])
 endfunction
@@ -17,8 +17,8 @@ endfunction
 
 " --------------------------------------------------------------------- # Trim #
 
-function! kronos#utils#trim(str)
-  return kronos#utils#compose('s:trim_left', 's:trim_right')(a:str)
+function! unfog#utils#trim(str)
+  return unfog#utils#compose('s:trim_left', 's:trim_right')(a:str)
 endfunction
 
 function! s:trim_left(str)
@@ -31,7 +31,7 @@ endfunction
 
 " ------------------------------------------------------------------- # Assign #
 
-function! kronos#utils#assign(...)
+function! unfog#utils#assign(...)
   let overrides = copy(a:000)
   let base = remove(overrides, 0)
 
@@ -47,7 +47,7 @@ endfunction
 
 " ---------------------------------------------------------------------- # Sum #
 
-function! kronos#utils#sum(array)
+function! unfog#utils#sum(array)
   let total = 0
 
   for item in a:array
@@ -59,7 +59,7 @@ endfunction
 
 " ----------------------------------------------------------- # Match one item #
 
-function! kronos#utils#match_one(list_src, list_dest)
+function! unfog#utils#match_one(list_src, list_dest)
   if empty(a:list_dest)
     return 1
   endif
@@ -69,4 +69,20 @@ function! kronos#utils#match_one(list_src, list_dest)
   endfor
 
   return 0
+endfunction
+
+
+" --------------------------------------------------------------------- # Logs #
+
+function! unfog#utils#log(msg)
+  echohl None
+  echom 'unfog: ' . a:msg
+endfunction
+
+
+function! unfog#utils#elog(msg)
+  redraw
+  echohl ErrorMsg
+  echom 'unfog: ' . a:msg
+  echohl None
 endfunction

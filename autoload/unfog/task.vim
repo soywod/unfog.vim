@@ -53,20 +53,20 @@ endfunction
 
 " ------------------------------------------------------------------- # Toggle #
 
-function! unfog#task#toggle(task)
-  let update = a:task.active ? {
-    \'active': 0,
-    \'stop': a:task.stop + [localtime()],
-  \} : {
-    \'active': 1,
-    \'start': a:task.start + [localtime()],
-  \}
+function! s:exec(cmd, args)
+  let cmd = call("printf", [a:cmd] + a:args)
+  let result = eval(system(cmd))
 
-  if g:unfog_backend == 'taskwarrior'
-    call unfog#backends#taskwarrior#toggle(a:task)
+  if result.success
+    return result.data
+  else
+    throw result.data
   endif
+endfunction
 
-  return s:assign(a:task, update)
+function! unfog#task#toggle(task)
+  let action = a:task.active ? "stop" : "start"
+  return s:exec("unfog %s %d --json", [action, a:task.id])
 endfunction
 
 " --------------------------------------------------------------------- # Done #
