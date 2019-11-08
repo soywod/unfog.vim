@@ -18,7 +18,7 @@ let s:buff_name = 'Unfog'
 let s:config = {
   \'info': {
     \'columns': ['key', 'value'],
-    \'keys': ['id', 'desc', 'tags', 'active', 'due', 'done', 'worktime'],
+    \'keys': ['id', 'desc', 'tags', 'active'],
   \},
   \'list': {
     \'columns': ['id', 'desc', 'tags', 'active'],
@@ -100,11 +100,12 @@ endfunction
 
 function! unfog#ui#context()
   try
-    let args = input('Go to context: ')
-    let g:unfog_context = split(s:trim(args), ' ')
+    let ctx = input('Go to context: ')
+    let msg = unfog#task#context(ctx)
     call unfog#ui#list()
+    call s:log(msg)
   catch
-    return s:elog('context failed')
+    call s:elog(v:exception)
   endtry
 endfunction
 
@@ -298,9 +299,6 @@ function s:parse_buffer_line(index, line)
       \'tags': tags,
       \'due': due,
       \'active': 0,
-      \'start': [],
-      \'stop': [],
-      \'done': 0,
     \}
   else
     let cells = split(a:line, '|')
@@ -317,9 +315,6 @@ function s:parse_buffer_line(index, line)
         \'tags': tags,
         \'due': due,
         \'active': 0,
-        \'start': [],
-        \'stop': [],
-        \'done': 0,
       \}
 
       if id | let task.id = id | endif
@@ -336,7 +331,6 @@ function s:parse_buffer_line(index, line)
     return s:assign(task, {
       \'desc': desc,
       \'tags': tags,
-      \'due': due,
     \})
   endif
 endfunction

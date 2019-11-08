@@ -5,6 +5,17 @@ let s:duration = function('unfog#utils#date#duration')
 let s:relative = function('unfog#utils#date#relative')
 let s:match_one = function('unfog#utils#match_one')
 
+function! s:exec(cmd, args)
+  let cmd = call("printf", [a:cmd] + a:args)
+  let result = eval(system(cmd))
+
+  if result.success
+    return result.data
+  else
+    throw result.data
+  endif
+endfunction
+
 " --------------------------------------------------------------------- # CRUD #
 
 function! unfog#task#create(ids, task)
@@ -53,20 +64,15 @@ endfunction
 
 " ------------------------------------------------------------------- # Toggle #
 
-function! s:exec(cmd, args)
-  let cmd = call("printf", [a:cmd] + a:args)
-  let result = eval(system(cmd))
-
-  if result.success
-    return result.data
-  else
-    throw result.data
-  endif
-endfunction
-
 function! unfog#task#toggle(task)
   let action = a:task.active ? "stop" : "start"
   return s:exec("unfog %s %d --json", [action, a:task.id])
+endfunction
+
+" ------------------------------------------------------------------- # Toggle #
+
+function! unfog#task#context(context)
+  return s:exec("unfog context %s --json", [a:context])
 endfunction
 
 " --------------------------------------------------------------------- # Done #
