@@ -45,7 +45,7 @@ for [mode, key, plug] in mappings
   endif
 endfor
 
-augroup klist
+augroup unfog-list
   autocmd! * <buffer>
   autocmd  BufWriteCmd <buffer> call unfog#ui#parse_buffer()
 augroup end

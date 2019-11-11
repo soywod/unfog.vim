@@ -57,7 +57,7 @@ function! unfog#ui#show()
 
   call append(0, s:render('info', lines))
   normal! ddgg
-  setlocal filetype=kinfo
+  setlocal filetype=unfog-show
 endfunction
 
 " --------------------------------------------------------------------- # List #
@@ -78,7 +78,7 @@ function! unfog#ui#list()
   call append(0, s:render('list', lines))
   execute '$d'
   call setpos('.', prev_pos)
-  setlocal filetype=klist
+  setlocal filetype=unfog-list
   let &modified = 0
   echo
 endfunction
@@ -145,7 +145,7 @@ function! unfog#ui#worktime()
 
   call append(0, s:render('worktime', lines))
   normal! ddgg
-  setlocal filetype=kwtime
+  setlocal filetype=unfog-wtime
   echo
 endfunction
 
