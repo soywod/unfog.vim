@@ -81,6 +81,12 @@ function! unfog#task#context(context)
   return s:exec("unfog context %s --json", [a:context])
 endfunction
 
+" ----------------------------------------------------------------- # Worktime #
+
+function! unfog#task#worktime(tags)
+  return s:exec("unfog worktime %s --json", [a:tags])
+endfunction
+
 " --------------------------------------------------------------------- # Done #
 
 function! unfog#task#done(task)

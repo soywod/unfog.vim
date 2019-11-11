@@ -112,41 +112,14 @@ endfunction
 " ----------------------------------------------------------------- # Worktime #
 
 function! unfog#ui#worktime()
-  let args = input('Worktime for: ')
-  let [tags, min, max] = s:parse_worktime_args(localtime(), args)
-  let tasks = unfog#task#read_all()
-  let worktimes = s:worktime(localtime(), tasks, tags, min, max)
-
-  let days  = s:compose('sort', 'keys')(worktimes)
-  let total = s:compose(
-    \s:duration,
-    \s:sum,
-    \'values'
-  \)(worktimes)
-
-  let worktimes_lines = map(
-    \copy(days),
-    \'{"date": v:val, "worktime": s:duration(worktimes[v:val])}',
-  \)
-
-  let empty_line = {'date': '---', 'worktime': '---'}
-  let total_line = {
-    \'date': s:config.labels['total'],
-    \'worktime': total,
-  \}
-
-  let lines = worktimes_lines + [empty_line, total_line]
-
-  let tags_str = empty(tags)
-    \? ''
-    \: join(map(copy(tags), 'printf(" +%s", v:val)'), '')
-
-  execute 'silent! botright new Unfog Worktime' . tags_str
-
-  call append(0, s:render('worktime', lines))
-  normal! ddgg
-  setlocal filetype=unfog-wtime
-  echo
+  try
+    let tags = input('Worktime for: ')
+    let msg = unfog#task#worktime(tags)
+    redraw
+    call s:log(msg)
+  catch
+    call s:elog(v:exception)
+  endtry
 endfunction
 
 function s:parse_worktime_args(date_ref, args)
