@@ -9,7 +9,7 @@ function! s:exec(cmd, args)
   let cmd = call("printf", [a:cmd] + a:args)
   let result = eval(system(cmd))
 
-  if result.success
+  if result.ok
     return result.data
   else
     throw result.data
@@ -56,10 +56,16 @@ function! unfog#task#update(prev_task, next_task)
   return s:assign(a:prev_task, a:next_task)
 endfunction
 
+" --------------------------------------------------------------------- # Show #
+
+function! unfog#task#show(id)
+  return s:exec("unfog show %s --json", [a:id])
+endfunction
+
 " --------------------------------------------------------------------- # List #
 
 function! unfog#task#list()
-  return eval(system("unfog list --json"))
+  return s:exec("unfog list --json", [])
 endfunction
 
 " ------------------------------------------------------------------- # Toggle #
@@ -130,17 +136,12 @@ function! unfog#task#get_position(tasks, id)
   throw 'task not found'
 endfunction
 
-function! unfog#task#to_info_string(task)
+function! unfog#task#to_show_string(task)
   let task = copy(a:task)
 
-  let starts = task.start
-  let stops  = task.active ? task.stop + [localtime()] : task.stop
-
-  let task.tags   = join(task.tags, ' ')
-  let task.active = task.active ? 'true' : 'false'
-  let task.done = task.done ? s:strftime(task.done) : ''
-  let task.due  = task.due  ? s:strftime(task.due)  : ''
-  let task.worktime = s:duration(s:sum(stops) - s:sum(starts))
+  let task.tags   = join(task.tags, " ")
+  let task.active = task.active ? "✔" : ""
+  let task.worktime = empty(task.worktime.micro) ? "" : task.worktime.human
 
   return task
 endfunction
@@ -151,8 +152,7 @@ function! unfog#task#to_list_string(task)
 
   let task.tags   = join(task.tags, " ")
   let task.active = task.active ? "✔" : ""
-  " let task.done   = task.done   ? s:relative(now, task.done)      : ''
-  " let task.due    = task.due    ? s:relative(now, task.due)       : ''
+  let task.worktime = empty(task.worktime.micro) ? "" : task.worktime.approx
 
   return task
 endfunction

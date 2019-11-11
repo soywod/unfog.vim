@@ -18,10 +18,10 @@ let s:buff_name = 'Unfog'
 let s:config = {
   \'info': {
     \'columns': ['key', 'value'],
-    \'keys': ['id', 'desc', 'tags', 'active'],
+    \'keys': ['id', 'desc', 'tags', 'active', 'worktime'],
   \},
   \'list': {
-    \'columns': ['id', 'desc', 'tags', 'active'],
+    \'columns': ['id', 'desc', 'tags', 'active', 'worktime'],
   \},
   \'worktime': {
     \'columns': ['date', 'worktime'],
@@ -41,18 +41,19 @@ let s:config = {
   \},
 \}
 
-" --------------------------------------------------------------------- # Info #
+" --------------------------------------------------------------------- # Show #
 
-function! unfog#ui#info()
-  let task = s:get_focused_task()
-  let task = unfog#task#to_info_string(task)
+function! unfog#ui#show()
+  let id = s:get_focused_task_id()
+  let task = unfog#task#show(id)
+  let task = unfog#task#to_show_string(task)
   let lines = map(
     \copy(s:config.info.keys),
     \'{"key": s:config.labels[v:val], "value": task[v:val]}',
   \)
 
-  silent! bwipeout 'Unfog Info'
-  silent! botright new Unfog Info
+  silent! bwipeout 'Unfog show'
+  silent! botright new Unfog show
 
   call append(0, s:render('info', lines))
   normal! ddgg
@@ -64,7 +65,6 @@ endfunction
 function! unfog#ui#list()
   let prev_pos = getpos('.')
 
-  " call s:refresh_buff_name()
   let tasks = unfog#task#list()
   let lines = map(copy(tasks), 'unfog#task#to_list_string(v:val)')
 
@@ -106,17 +106,6 @@ function! unfog#ui#context()
     call s:log(msg)
   catch
     call s:elog(v:exception)
-  endtry
-endfunction
-
-" --------------------------------------------------------- # Toggle hide done #
-
-function! unfog#ui#hide_done()
-  try
-    let g:unfog_hide_done = !g:unfog_hide_done
-    call unfog#ui#list()
-  catch
-    return s:elog('toggle hide done failed')
   endtry
 endfunction
 
@@ -409,6 +398,14 @@ function! s:get_focused_task()
   if  index == -1 | throw 'task not found' | endif
 
   return get(tasks, index)
+endfunction
+
+function! s:get_focused_task_id()
+  try
+    return split(getline("."), "|")[0]
+  catch
+    throw 'task not found'
+  endtry
 endfunction
 
 function! s:refresh_buff_name()

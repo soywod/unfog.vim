@@ -6,7 +6,7 @@ setlocal startofline
 let mappings = [
   \['n', '<space>', 'list'          ],
   \['n', '<cr>',    'toggle'        ],
-  \['n', 'K',       'info'          ],
+  \['n', 'K',       'show'          ],
   \['n', 'gc',      'context'       ],
   \['n', 'gh',      'hide-done'     ],
   \['n', 'gw',      'worktime'      ],
@@ -21,7 +21,7 @@ let mappings = [
 
 nnoremap <silent> <plug>(unfog-list)       :call unfog#ui#list()      <cr>
 nnoremap <silent> <plug>(unfog-toggle)     :call unfog#ui#toggle()    <cr>
-nnoremap <silent> <plug>(unfog-info)       :call unfog#ui#info()      <cr>
+nnoremap <silent> <plug>(unfog-show)       :call unfog#ui#show()      <cr>
 nnoremap <silent> <plug>(unfog-context)    :call unfog#ui#context()   <cr>
 nnoremap <silent> <plug>(unfog-hide-done)  :call unfog#ui#hide_done() <cr>
 nnoremap <silent> <plug>(unfog-worktime)   :call unfog#ui#worktime()  <cr>
