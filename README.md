@@ -1,5 +1,5 @@
-# Kronos.vim [![Build Status](https://travis-ci.org/soywod/kronos.vim.svg?branch=master)](https://travis-ci.org/soywod/kronos.vim)
-A simple task and time manager.
+# Unfog [WIP]
+A simple task and time manager (Vim plugin version).
 
 <p align="center">
   <img src="https://user-images.githubusercontent.com/10437171/50441115-77205f80-08f9-11e9-97d4-b7b64741d8f2.png"></img>
@@ -7,7 +7,6 @@ A simple task and time manager.
 
 ## Table of contents
 
-  * [Requirements](#requirements)
   * [Usage](#usage)
     * [Create](#create)
     * [Read](#read)
@@ -26,15 +25,10 @@ A simple task and time manager.
   * [Changelog](#changelog)
   * [Credits](#credits)
 
-## Requirements
-
-  - VIM v8+ or NVIM v0.3.4+ (not tested on lower versions)
-  - Python v3.3+ (check it with `:echo has('python3')` and `:!python3 --version`)
-
 ## Usage
 
 ```vim
-:Kronos
+:Unfog
 ```
 
 Then you can create, read, update, delete tasks using Vim mapping. The table
