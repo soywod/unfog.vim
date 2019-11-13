@@ -6,8 +6,8 @@ let s:approx_due = function('unfog#utils#date#approx_due')
 let s:parse_due = function('unfog#utils#date#parse_due')
 let s:worktime = function('unfog#utils#date#worktime')
 let s:duration = function('unfog#utils#date#duration')
-let s:log = function('unfog#utils#log')
-let s:elog = function('unfog#utils#elog')
+let s:print_msg = function('unfog#utils#print_msg')
+let s:print_err = function('unfog#utils#print_err')
 let s:match_one = function('unfog#utils#match_one')
 
 let s:max_widths = []
@@ -44,55 +44,62 @@ let s:config = {
 " --------------------------------------------------------------------- # Show #
 
 function! unfog#ui#show()
-  let id = s:get_focused_task_id()
-  let task = unfog#task#show(id)
-  let task = unfog#task#to_show_string(task)
-  let lines = map(
-    \copy(s:config.info.keys),
-    \'{"key": s:config.labels[v:val], "value": task[v:val]}',
-  \)
+  try
+    let id = s:get_focused_task_id()
+    let task = unfog#task#show(id)
+    let task = unfog#task#format_for_show(task)
+    let lines = map(
+      \copy(s:config.info.keys),
+      \'{"key": s:config.labels[v:val], "value": task[v:val]}',
+    \)
 
-  silent! bwipeout 'Unfog show'
-  silent! botright new Unfog show
+    silent! bwipeout 'Unfog show'
+    silent! botright new Unfog show
 
-  call append(0, s:render('info', lines))
-  normal! ddgg
-  setlocal filetype=unfog-show
+    call append(0, s:render('info', lines))
+    normal! ddgg
+    setlocal filetype=unfog-show
+  catch
+    call s:print_err(v:exception)
+  endtry
 endfunction
 
 " --------------------------------------------------------------------- # List #
 
 function! unfog#ui#list()
-  let prev_pos = getpos('.')
+  try
+    let prev_pos = getpos('.')
+    let tasks = unfog#task#list()
+    let lines = map(copy(tasks), 'unfog#task#format_for_list(v:val)')
 
-  let tasks = unfog#task#list()
-  let lines = map(copy(tasks), 'unfog#task#to_list_string(v:val)')
+    redir => buf_list | silent! ls | redir END
+    execute 'silent! edit ' . s:buff_name
 
-  redir => buf_list | silent! ls | redir END
-  execute 'silent! edit ' . s:buff_name
+    if match(buf_list, '"Unfog') > -1
+      execute '0,$d'
+    endif
 
-  if match(buf_list, '"Unfog') > -1
-    execute '0,$d'
-  endif
-
-  call append(0, s:render('list', lines))
-  execute '$d'
-  call setpos('.', prev_pos)
-  setlocal filetype=unfog-list
-  let &modified = 0
-  echo
+    call append(0, s:render('list', lines))
+    execute '$d'
+    call setpos('.', prev_pos)
+    setlocal filetype=unfog-list
+    let &modified = 0
+    echo
+  catch
+    call s:print_err(v:exception)
+  endtry
 endfunction
 
 " ------------------------------------------------------------------- # Toggle #
 
 function! unfog#ui#toggle()
   try
-    let task = s:get_focused_task()
-    let msg = unfog#task#toggle(task)
+    let id = s:get_focused_task_id()
+    let msg = unfog#task#toggle(id)
     call unfog#ui#list()
-    call s:log(msg)
+    call s:print_msg(msg)
   catch
-    call s:elog(v:exception)
+    call s:print_err(v:exception)
   endtry
 endfunction
 
@@ -103,9 +110,9 @@ function! unfog#ui#context()
     let ctx = input('Go to context: ')
     let msg = unfog#task#context(ctx)
     call unfog#ui#list()
-    call s:log(msg)
+    call s:print_msg(msg)
   catch
-    call s:elog(v:exception)
+    call s:print_err(v:exception)
   endtry
 endfunction
 
@@ -116,30 +123,10 @@ function! unfog#ui#worktime()
     let tags = input('Worktime for: ')
     let msg = unfog#task#worktime(tags)
     redraw
-    call s:log(msg)
+    call s:print_msg(msg)
   catch
-    call s:elog(v:exception)
+    call s:print_err(v:exception)
   endtry
-endfunction
-
-function s:parse_worktime_args(date_ref, args)
-  let args = split(s:trim(a:args), ' ')
-
-  let min  = -1
-  let max  = -1
-  let tags = []
-
-  for arg in args
-    if arg =~ '^>\w*'
-      let min = s:approx_due_strict(a:date_ref, arg)
-    elseif arg =~ '^<\w*'
-      let max = s:approx_due_strict(a:date_ref, arg)
-    else
-      call add(tags, arg)
-    endif
-  endfor
-
-  return [tags, min, max]
 endfunction
 
 " ---------------------------------------------------------- # Cell management #
@@ -177,131 +164,72 @@ function! unfog#ui#visual_in_cell()
   execute printf('normal! %svt|', col('.') == 1 ? '' : 'T|')
 endfunction
 
-" ------------------------------------------------------------------ # Sorting #
-
-function! s:sort_by(col, dir, t1, t2)
-  if a:col == 'tags' | return 0 | endif
-  if (a:t1[a:col] < a:t2[a:col]) | return -1 * a:dir
-  elseif (a:t1[a:col] > a:t2[a:col]) | return 1 * a:dir
-  else | return 0 | endif
-endfunction
-
-function unfog#ui#sort(dir)
-  let tasks  = unfog#database#read().tasks
-  let line = getline('.')
-  let pos = getcurpos()[2] - 1
-  let index = len(split(line[pos:], '|'))
-  let index = index == 0 ? 1 : index
-  let col = s:config.list.columns[len(s:config.list.columns) - index]
-  let sorted_tasks = sort(copy(tasks), {a, b -> s:sort_by(col, a:dir, a, b)})
-
-  call unfog#database#write({'tasks': sorted_tasks})
-  call unfog#ui#list()
-  let &modified = 1
-endfunction
-
 " -------------------------------------------------------------- # Parse utils #
 
-function unfog#ui#parse_buffer()
-  let prev_tasks  = unfog#database#read().tasks
-  let next_tasks  = map(getline(2, '$'), 's:parse_buffer_line(v:key, v:val)')
+function! unfog#ui#parse_buffer()
+  try
+    let prev_tasks = unfog#task#list()
+    let next_tasks = map(getline(2, "$"), "s:parse_buffer_line(v:key, v:val)")
+    let tasks_to_create = filter(copy(next_tasks), "v:val.id == 0")
+    let tasks_to_update = []
+    let tasks_to_remove = []
+    let msgs = []
 
-  let prev_tasks_id = map(copy(prev_tasks), 'v:val.id')
-  let next_tasks_id = map(filter(copy(next_tasks), "has_key(v:val, 'id')"), 'v:val.id')
-  let tasks_id = uniq(prev_tasks_id + next_tasks_id)
+    for prev_task in prev_tasks
+      let next_task = filter(copy(next_tasks), "v:val.id == prev_task.id")
 
-  " Update existing tasks and create new ones
-  for i in range(len(next_tasks))
-    let next_task = next_tasks[i]
+      if empty(next_task)
+        let tasks_to_remove += [prev_task.id]
+      elseif prev_task.desc != next_task[0].desc || prev_task.tags != next_task[0].tags
+        let tasks_to_update += [next_task[0]]
+      endif
+    endfor
 
-    if !has_key(next_task, 'id')
-      let next_tasks[i] = unfog#task#create(tasks_id, next_task)
-      let tasks_id += [next_tasks[i].id]
-    elseif !s:exists_in(prev_tasks_id, next_task.id)
-      let next_tasks[i] = unfog#task#create(prev_tasks_id, next_task)
-      let tasks_id += [next_tasks[i].id]
-    else
-      let prev_task_index = index(prev_tasks_id, next_task.id)
-      let next_tasks[i] = unfog#task#update(
-        \prev_tasks[prev_task_index],
-        \next_task
-      \)
-    endif
-  endfor
+    for task in tasks_to_create | let msgs += [unfog#task#create(task)]   | endfor
+    for task in tasks_to_update | let msgs += [unfog#task#replace(task)]  | endfor
+    for id in tasks_to_remove   | let msgs += [unfog#task#remove(id)]     | endfor 
 
-  " Mark as done or delete missing ones
-  for prev_task in prev_tasks
-    if s:exists_in(next_tasks_id, prev_task.id) | continue | endif
-    if !s:match_one(prev_task.tags, g:unfog_context)
-      call add(next_tasks, prev_task) | continue
-    endif
-
-    if g:unfog_hide_done || !prev_task.done
-      call add(next_tasks, unfog#task#done(prev_task))
-    endif
-  endfor
-
-  call unfog#database#write({'tasks': uniq(next_tasks, 's:uniq_by_id')})
-  call unfog#ui#list()
-  let &modified = 0
+    call unfog#ui#list()
+    let &modified = 0
+    for msg in msgs | call s:print_msg(msg) | endfor
+  catch
+    call s:print_err(v:exception)
+  endtry
 endfunction
 
-function s:uniq_by_id(a, b)
+function! s:parse_buffer_line(index, line)
+  if match(a:line, '^|-\=\d\{-1,}\s\{-}|.*|.\{-}|.\{-}|.\{-}|$') != -1
+    let cells = split(a:line, "|")
+    let id = +s:trim(cells[0])
+    let desc = s:trim(join(cells[1:-4], ""))
+    let tags = split(s:trim(cells[-3]), " ")
+
+    return {
+      \"id": id,
+      \"desc": desc,
+      \"tags": tags,
+    \}
+  else
+    let [desc, tags] = s:parse_args(localtime(), s:trim(a:line))
+
+    return {
+      \"id": 0,
+      \"desc": desc,
+      \"tags": tags,
+    \}
+  endif
+endfunction
+
+function! s:uniq_by_id(a, b)
   if a:a.id > a:b.id | return 1
   elseif a:a.id < a:b.id | return -1
   else | return 0 | endif
-endfunction
-
-function s:parse_buffer_line(index, line)
-  if match(a:line, '^|-\=\d\{-1,}\s\{-}|.*|.\{-}|.\{-}|.\{-}|$') == -1
-    let [desc, tags, due] = s:parse_args(localtime(), s:trim(a:line))
-
-    return {
-      \'desc': desc,
-      \'tags': tags,
-      \'due': due,
-      \'active': 0,
-    \}
-  else
-    let cells = split(a:line, '|')
-    let id = +s:trim(cells[0])
-    let desc = s:trim(join(cells[1:-4], ''))
-    let tags = split(s:trim(cells[-3]), ' ')
-    let due = s:trim(cells[-1])
-
-    try
-      let task = unfog#task#read(id)
-    catch
-      let task = {
-        \'desc': desc,
-        \'tags': tags,
-        \'due': due,
-        \'active': 0,
-      \}
-
-      if id | let task.id = id | endif
-      return task
-    endtry
-
-    if match(due, '^\s*:') == -1
-      if cells[-1] != '' | let due = task.due
-      else | let due = 0 | endif
-    else
-      let due = s:approx_due(localtime(), due)
-    endif
-
-    return s:assign(task, {
-      \'desc': desc,
-      \'tags': tags,
-    \})
-  endif
 endfunction
 
 function! s:parse_args(date_ref, args)
   let args = split(a:args, ' ')
 
   let desc     = []
-  let due      = 0
   let tags     = []
   let tags_old = []
   let tags_new = []
@@ -311,8 +239,6 @@ function! s:parse_args(date_ref, args)
       call add(tags_new, arg[1:])
     elseif arg =~ '^-\w'
       call add(tags_old, arg[1:])
-    elseif arg =~ '^:\w*'
-      let due = s:approx_due(a:date_ref, arg)
     else
       call add(desc, arg)
     endif
@@ -327,7 +253,7 @@ function! s:parse_args(date_ref, args)
     if  index != -1 | call remove(tags, index) | endif
   endfor
 
-  return [join(desc, ' '), tags, due]
+  return [join(desc, ' '), tags]
 endfunction
 
 " ------------------------------------------------------------------ # Renders #
@@ -363,14 +289,6 @@ function! s:get_max_widths(tasks, columns)
   endfor
 
   return max_widths
-endfunction
-
-function! s:get_focused_task()
-  let tasks = unfog#task#list()
-  let index = line('.') - 2
-  if  index == -1 | throw 'task not found' | endif
-
-  return get(tasks, index)
 endfunction
 
 function! s:get_focused_task_id()

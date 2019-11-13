@@ -74,15 +74,15 @@ endfunction
 
 " --------------------------------------------------------------------- # Logs #
 
-function! unfog#utils#log(msg)
+function! unfog#utils#print_msg(msg)
   echohl None
   echom 'unfog: ' . a:msg
 endfunction
 
 
-function! unfog#utils#elog(msg)
+function! unfog#utils#print_err(err)
   redraw
   echohl ErrorMsg
-  echom 'unfog: ' . a:msg
+  echom 'unfog: ' . a:err
   echohl None
 endfunction
