@@ -48,7 +48,7 @@ function! unfog#task#format_for_show(task)
 
   let task.tags     = join(task.tags, " ")
   let task.active   = task.active ? "✔" : ""
-  let task.worktime = empty(task.worktime.micro) ? "" : task.worktime.human
+  let task.wtime = empty(task.wtime.micro) ? "" : task.wtime.human
 
   return task
 endfunction
@@ -59,7 +59,7 @@ function! unfog#task#format_for_list(task)
 
   let task.tags     = join(task.tags, " ")
   let task.active   = task.active ? "✔" : ""
-  let task.worktime = empty(task.worktime.micro) ? "" : task.worktime.approx
+  let task.wtime = empty(task.wtime.micro) ? "" : task.wtime.approx
 
   return task
 endfunction
