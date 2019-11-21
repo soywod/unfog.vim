@@ -23,8 +23,8 @@ let s:config = {
   \'list': {
     \'columns': ['id', 'desc', 'tags', 'active', 'wtime'],
   \},
-  \'worktime': {
-    \'columns': ['date', 'worktime'],
+  \'wtime': {
+    \'columns': ['date', 'wtime'],
   \},
   \'labels': {
     \'active': 'ACTIVE',
@@ -121,9 +121,24 @@ endfunction
 function! unfog#ui#worktime()
   try
     let tags = input('Worktime for: ')
-    let msg = unfog#task#worktime(tags)
-    redraw
-    call s:print_msg(msg)
+    let wtimes = unfog#task#worktime(tags)
+    let wtimes_lines = map(
+      \copy(wtimes.wtimes),
+      \'{"date": v:val.date, "wtime": v:val.wtime.human}',
+    \)
+    let empty_line = {"date": "---", "wtime": "---"}
+    let total_line = {
+      \"date": s:config.labels.total,
+      \"wtime": wtimes.total.human,
+    \}
+    let lines = wtimes_lines + [empty_line, total_line]
+
+    silent! bwipeout 'Unfog wtime'
+    silent! botright new Unfog wtime
+
+    call append(0, s:render('wtime', lines))
+    normal! ddgg
+    setlocal filetype=unfog-wtime
   catch
     call s:print_err(v:exception)
   endtry
