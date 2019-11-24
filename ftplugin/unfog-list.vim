@@ -8,10 +8,7 @@ let mappings = [
   \['n', '<cr>',    'toggle'        ],
   \['n', 'K',       'show'          ],
   \['n', 'gc',      'context'       ],
-  \['n', 'gh',      'hide-done'     ],
   \['n', 'gw',      'worktime'      ],
-  \['n', 'gs',      'sort-asc'      ],
-  \['n', 'gS',      'sort-desc'     ],
   \['n', '<c-n>',   'next-cell'     ],
   \['n', '<c-p>',   'prev-cell'     ],
   \['n', 'dic',     'delete-in-cell'],
@@ -23,10 +20,7 @@ nnoremap <silent> <plug>(unfog-list)       :call unfog#ui#list()      <cr>
 nnoremap <silent> <plug>(unfog-toggle)     :call unfog#ui#toggle()    <cr>
 nnoremap <silent> <plug>(unfog-show)       :call unfog#ui#show()      <cr>
 nnoremap <silent> <plug>(unfog-context)    :call unfog#ui#context()   <cr>
-nnoremap <silent> <plug>(unfog-hide-done)  :call unfog#ui#hide_done() <cr>
 nnoremap <silent> <plug>(unfog-worktime)   :call unfog#ui#worktime()  <cr>
-nnoremap <silent> <plug>(unfog-sort-asc)   :call unfog#ui#sort(1)     <cr>
-nnoremap <silent> <plug>(unfog-sort-desc)  :call unfog#ui#sort(-1)    <cr>
 
 nnoremap <silent> <plug>(unfog-next-cell)  :call unfog#ui#select_next_cell()<cr>
 nnoremap <silent> <plug>(unfog-prev-cell)  :call unfog#ui#select_prev_cell()<cr>
