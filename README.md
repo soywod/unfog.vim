@@ -7,7 +7,6 @@ and time manager written in [Haskell](https://www.haskell.org).
 
 ## Table of contents
 
-  * [Requirements](#requirements)
   * [Installation](#installation)
   * [Usage](#usage)
     * [Create](#create)
@@ -22,14 +21,17 @@ and time manager written in [Haskell](https://www.haskell.org).
   * [Changelog](#changelog)
   * [Credits](#credits)
 
-## Requirements
-
-The [unfog CLI](https://github.com/unfog-io/unfog-cli#installation) needs to be
-installed before using this plugin.
-
 ## Installation
 
-With [vim-plug](https://github.com/junegunn/vim-plug), add to your `.vimrc`:
+First you need to install the [unfog
+CLI](https://github.com/unfog-io/unfog-cli#installation):
+
+```bash
+curl -sSL https://raw.githubusercontent.com/unfog-io/unfog-cli/master/install.sh | sh
+```
+
+Then you can install this plugin with your favorite plugin manager. For eg:
+with [vim-plug](https://github.com/junegunn/vim-plug), add to your `.vimrc`:
 
 ```viml
 Plug "unfog-io/unfog-vim"
@@ -44,7 +46,7 @@ Then:
 ## Usage
 
 It is recommanded to first read [the Unfog CLI
-documentation](https://github.com/unfog-io/unfog-cli#readme) to understand the
+documentation](https://github.com/unfog-io/unfog-cli#usage) to understand the
 concept.
 
 To list tasks:
