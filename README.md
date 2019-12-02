@@ -18,7 +18,7 @@ and time manager written in [Haskell](https://www.haskell.org).
     * [Worktime](#worktime)
   * [Mappings](#mappings)
   * [Contributing](#contributing)
-  * [Changelog](#changelog)
+  * [Changelog](https://github.com/unfog-io/unfog-vim/blob/master/CHANGELOG.md#changelog)
   * [Credits](#credits)
 
 ## Installation
@@ -131,10 +131,6 @@ convention. A line should never contain more than `80` characters.
 
 Tests should be added for each new functionality. Be sure to run tests before
 proposing a pull request.
-
-## Changelog
-
-- **Nov. 24, 2019** - First release v0.1.0
 
 ## Credits
 
