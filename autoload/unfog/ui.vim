@@ -187,7 +187,6 @@ function! unfog#ui#parse_buffer()
     let prev_tasks = unfog#task#list()
     let next_tasks = map(lines, "s:parse_buffer_line(v:key, v:val)")
     let tasks_to_create = filter(copy(next_tasks), "v:val.id == 0")
-    echom string(tasks_to_create)
     let tasks_to_update = []
     let tasks_to_remove = []
     let msgs = []

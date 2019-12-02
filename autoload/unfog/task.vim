@@ -19,12 +19,12 @@ endfunction
 
 function! unfog#task#create(task)
   let tags = join(map(a:task.tags, "'+' . v:val"), " ")
-  return s:exec("unfog create %s %s --json", [a:task.desc, tags])
+  return s:exec("unfog create %s %s --json", [shellescape(a:task.desc), tags])
 endfunction
 
 function! unfog#task#replace(task)
   let tags = join(map(a:task.tags, "'+' . v:val"), " ")
-  return s:exec("unfog replace %d %s %s --json", [a:task.id, a:task.desc, tags])
+  return s:exec("unfog replace %d %s %s --json", [a:task.id, shellescape(a:task.desc), tags])
 endfunction
 
 function! unfog#task#toggle(id)
