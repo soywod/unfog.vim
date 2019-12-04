@@ -65,6 +65,8 @@ section for special actions.
 
 ### Show
 
+Default mapping: [`K`](#mappings) (Shift-k).
+
 ![gif](https://user-images.githubusercontent.com/10437171/69496439-84134d80-0ed2-11ea-9737-64e4ac11c88c.gif)
 
 ### Update
@@ -72,6 +74,8 @@ section for special actions.
 ![gif](https://user-images.githubusercontent.com/10437171/69496694-069d0c80-0ed5-11ea-8d54-9c06aeaead4c.gif)
 
 ### Toggle
+
+Default mapping: [`<CR>`](#mappings) (Enter).
 
 ![gif](https://user-images.githubusercontent.com/10437171/69496733-6a273a00-0ed5-11ea-85a3-8afdde52511c.gif)
 
@@ -81,9 +85,13 @@ section for special actions.
 
 ### Context
 
+Default mapping: [`gc`](#mappings) (Go to Context).
+
 ![gif](https://user-images.githubusercontent.com/10437171/69496799-444e6500-0ed6-11ea-95f8-32a72c86bcbd.gif)
 
 ### Worktime
+
+Default mapping: [`gw`](#mappings) (Go to Worktime).
 
 ![gif](https://user-images.githubusercontent.com/10437171/69496824-91cad200-0ed6-11ea-9da5-b21b6c1f3390.gif)
 
