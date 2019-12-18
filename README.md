@@ -87,7 +87,7 @@ Default mapping: [`<CR>`](#mappings) (Enter).
 
 Default mapping: [`gc`](#mappings) (Go to Context).
 
-![gif](https://user-images.githubusercontent.com/10437171/69496799-444e6500-0ed6-11ea-95f8-32a72c86bcbd.gif)
+![gif](https://user-images.githubusercontent.com/10437171/71114883-0c82c680-21d1-11ea-8921-2f2bb4d479ab.gif)
 
 ### Worktime
 

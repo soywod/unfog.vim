@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Context gif not up-to-date in the README.md [#6]
+
 ## [0.2.0] - 2019-12-08
 
 ### Added
@@ -33,3 +37,4 @@ First release :tada:
 
 [#2]: https://github.com/unfog-io/unfog-vim/issues/2
 [#4]: https://github.com/unfog-io/unfog-vim/issues/4
+[#6]: https://github.com/unfog-io/unfog-vim/issues/6
