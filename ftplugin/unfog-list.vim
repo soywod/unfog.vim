@@ -4,7 +4,6 @@ setlocal nowrap
 setlocal startofline
 
 let mappings = [
-  \['n', '<space>', 'list'          ],
   \['n', '<cr>',    'toggle'        ],
   \['n', 'K',       'show'          ],
   \['n', 'gc',      'context'       ],
@@ -16,7 +15,6 @@ let mappings = [
   \['n', 'vic',     'visual-in-cell'],
 \]
 
-nnoremap <silent> <plug>(unfog-list)       :call unfog#ui#list()      <cr>
 nnoremap <silent> <plug>(unfog-toggle)     :call unfog#ui#toggle()    <cr>
 nnoremap <silent> <plug>(unfog-show)       :call unfog#ui#show()      <cr>
 nnoremap <silent> <plug>(unfog-context)    :call unfog#ui#context()   <cr>
