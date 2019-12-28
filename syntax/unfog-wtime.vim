@@ -8,7 +8,7 @@ syntax match unfog_wtime_head       /.*\%1l/          contains=unfog_wtime_separ
 
 highlight default link unfog_wtime_separator  VertSplit
 highlight default link unfog_wtime_date       Comment
-highlight default link unfog_wtime_time       String
+highlight default link unfog_wtime_time       Structure
 highlight default link unfog_wtime_total      Tag
 
 highlight unfog_wtime_head term=bold,underline cterm=bold,underline gui=bold,underline

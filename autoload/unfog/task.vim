@@ -46,27 +46,17 @@ endfunction
 function! unfog#task#format_for_show(task)
   let task = copy(a:task)
   let task.tags     = join(task.tags, " ")
+  let task.active = empty(task.active.micro) ? "" : task.active.human
+  let task.due = empty(task.due.micro) ? "" : task.due.human
   let task.wtime = empty(task.wtime.micro) ? "" : task.wtime.human
-
-  try
-    let task.active = empty(task.active.micro) ? "" : task.active.human
-  catch
-    let task.active = task.active ? "✔" : ""
-  endtry
-
   return task
 endfunction
 
 function! unfog#task#format_for_list(task)
   let task = copy(a:task)
   let task.tags     = join(task.tags, " ")
+  let task.active = empty(task.active.micro) ? "" : task.active.approx
+  let task.due = empty(task.due.micro) ? "" : task.due.approx
   let task.wtime = empty(task.wtime.micro) ? "" : task.wtime.approx
-
-  try
-    let task.active = empty(task.active.micro) ? "" : task.active.approx
-  catch
-    let task.active = task.active ? "✔" : ""
-  endtry
-
   return task
 endfunction

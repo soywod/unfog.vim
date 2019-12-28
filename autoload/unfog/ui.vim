@@ -18,10 +18,10 @@ let s:buff_name = 'Unfog'
 let s:config = {
   \'info': {
     \'columns': ['key', 'value'],
-    \'keys': ['id', 'desc', 'tags', 'active', 'wtime'],
+    \'keys': ['id', 'desc', 'tags', 'active', 'due', 'wtime'],
   \},
   \'list': {
-    \'columns': ['id', 'desc', 'tags', 'active', 'wtime'],
+    \'columns': ['id', 'desc', 'tags', 'active', 'due'],
   \},
   \'wtime': {
     \'columns': ['date', 'wtime'],

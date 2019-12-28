@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2019-12-28
+
+### Added
+
+- Update UI for CLI v0.3+
+
 ### Fixed
 
 - Context gif not up-to-date in the README.md [#6]
@@ -31,7 +37,8 @@ First release :tada:
 
 - Clone and adapt from [Kronos.vim](https://github.com/soywod/kronos.vim).
 
-[unreleased]: https://github.com/unfog-io/unfog-vim/compare/v0.2.0...HEAD
+[unreleased]: https://github.com/unfog-io/unfog-vim/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/unfog-io/unfog-vim/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/unfog-io/unfog-vim/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/unfog-io/unfog-vim/releases/tag/v0.1.0
 
