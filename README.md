@@ -9,9 +9,9 @@ and time manager written in [Haskell](https://www.haskell.org).
 
   * [Installation](#installation)
   * [Usage](#usage)
-    * [Create](#create)
-    * [Show](#show)
-    * [Update](#update)
+    * [Add](#add)
+    * [Info](#info)
+    * [Edit](#edit)
     * [Toggle](#toggle)
     * [Done/Delete](#donedelete)
     * [Context](#context)
@@ -59,17 +59,17 @@ Then you can manage tasks using Vim mapping. The table will automatically
 readjust on buffer save (`:w`). Also have a look at the [mappings](#mappings)
 section for special actions.
 
-### Create
+### Add
 
 ![gif](https://user-images.githubusercontent.com/10437171/69496343-8d4fea80-0ed1-11ea-8dc0-bea520390104.gif)
 
-### Show
+### Info
 
 Default mapping: [`K`](#mappings) (Shift-k).
 
 ![gif](https://user-images.githubusercontent.com/10437171/69496439-84134d80-0ed2-11ea-9737-64e4ac11c88c.gif)
 
-### Update
+### Edit
 
 ![gif](https://user-images.githubusercontent.com/10437171/69496694-069d0c80-0ed5-11ea-8d54-9c06aeaead4c.gif)
 
