@@ -4,15 +4,15 @@ setlocal nowrap
 setlocal startofline
 
 let mappings = [
-  \['n', '<cr>',    'toggle'        ],
-  \['n', 'K',       'show'          ],
-  \['n', 'gc',      'context'       ],
-  \['n', 'gw',      'worktime'      ],
-  \['n', '<c-n>',   'next-cell'     ],
-  \['n', '<c-p>',   'prev-cell'     ],
-  \['n', 'dic',     'delete-in-cell'],
-  \['n', 'cic',     'change-in-cell'],
-  \['n', 'vic',     'visual-in-cell'],
+  \["n", "<cr>",    "toggle"        ],
+  \["n", "K",       "show"          ],
+  \["n", "gc",      "context"       ],
+  \["n", "gw",      "worktime"      ],
+  \["n", "<c-n>",   "next-cell"     ],
+  \["n", "<c-p>",   "prev-cell"     ],
+  \["n", "dic",     "delete-in-cell"],
+  \["n", "cic",     "change-in-cell"],
+  \["n", "vic",     "visual-in-cell"],
 \]
 
 nnoremap <silent> <plug>(unfog-toggle)     :call unfog#ui#toggle()    <cr>
@@ -30,10 +30,10 @@ nnoremap <silent> <plug>(unfog-change-in-cell) :call unfog#ui#change_in_cell()<c
 nnoremap <silent> <plug>(unfog-visual-in-cell) :call unfog#ui#visual_in_cell()<cr>
 
 for [mode, key, plug] in mappings
-  let plug = printf('<plug>(unfog-%s)', plug)
+  let plug = printf("<plug>(unfog-%s)", plug)
 
   if !hasmapto(plug, mode)
-    execute printf('%smap <nowait> <buffer> %s %s', mode, key, plug)
+    execute printf("%smap <nowait> <buffer> %s %s", mode, key, plug)
   endif
 endfor
 

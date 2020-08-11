@@ -76,13 +76,13 @@ endfunction
 
 function! unfog#utils#print_msg(msg)
   echohl None
-  echom 'unfog: ' . a:msg
+  echom a:msg
 endfunction
 
 
 function! unfog#utils#print_err(err)
   redraw
   echohl ErrorMsg
-  echom 'unfog: ' . a:err
+  echom a:err
   echohl None
 endfunction
