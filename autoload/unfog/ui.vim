@@ -86,6 +86,44 @@ function! unfog#ui#list()
   endtry
 endfunction
 
+function! unfog#ui#list_done()
+  try
+    let prev_pos = getpos('.')
+    let s:tasks = unfog#task#list_done()
+    let lines = map(copy(s:tasks), 'unfog#task#format_for_list(v:val)')
+
+    silent! bwipeout 'Unfog done tasks'
+    silent! botright new Unfog done tasks
+
+    call append(0, s:render('list', lines))
+    execute '$d'
+    call setpos('.', prev_pos)
+    setlocal filetype=unfog-list-ro
+    let &modified = 0
+  catch
+    call s:print_err(v:exception)
+  endtry
+endfunction
+
+function! unfog#ui#list_deleted()
+  try
+    let prev_pos = getpos('.')
+    let s:tasks = unfog#task#list_deleted()
+    let lines = map(copy(s:tasks), 'unfog#task#format_for_list(v:val)')
+
+    silent! bwipeout 'Unfog deleted tasks'
+    silent! botright new Unfog deleted tasks
+
+    call append(0, s:render('list', lines))
+    execute '$d'
+    call setpos('.', prev_pos)
+    setlocal filetype=unfog-list-ro
+    let &modified = 0
+  catch
+    call s:print_err(v:exception)
+  endtry
+endfunction
+
 " ------------------------------------------------------------------- # Toggle #
 
 function! unfog#ui#toggle()

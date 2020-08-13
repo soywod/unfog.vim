@@ -17,6 +17,14 @@ function! unfog#task#list()
   return s:exec("unfog list --json", []).tasks
 endfunction
 
+function! unfog#task#list_done()
+  return s:exec("unfog list --done --json", []).tasks
+endfunction
+
+function! unfog#task#list_deleted()
+  return s:exec("unfog list --deleted --json", []).tasks
+endfunction
+
 function! unfog#task#add(task)
   let desc = shellescape(a:task.desc)
   let proj = shellescape(a:task.project)
