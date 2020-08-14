@@ -1,4 +1,4 @@
-*unfog.txt* - A simple task and time manager.
+*unfog.txt* - ⏱ Minimalist task & time manager.
                                                         
                  _/    _/  _/      _/  _/_/_/_/    _/_/      _/_/_/   
                 _/    _/  _/_/    _/  _/        _/    _/  _/          
@@ -22,7 +22,7 @@ REQUIREMENTS                                              *unfog-requirements*
 
   - Vim or Neovim
   - Unfog CLI {1}
-                        https://github.com/unfog-io/unfog-cli#installation {1}
+                              https://github.com/soywod/unfog#installation {1}
 
 ==============================================================================
 USAGE                                                            *unfog-usage* 
@@ -35,16 +35,17 @@ To list tasks:
   :Unfog
 <
 Then you can manage tasks using Vim mapping. The table will automatically
-readjust on buffer save (`:w`). Also have a look at the [mappings](#mappings)
-section for special actions.
+readjust on buffer save (`:w`). See https://github.com/soywod/unfog.vim.
 
-                              https://github.com/unfog-io/unfog-cli#readme {1}
+                                    https://github.com/soywod/unfog#readme {1}
 
 ==============================================================================
 MAPPINGS                                                      *unfog-mappings* 
 
 Here the default mappings:
 
+List done tasks             gd
+List deleted tasks          gD
 Toggle task                 <CR>
 Show task infos             {K}
 Set context                 {gc}
@@ -57,6 +58,8 @@ Visual in cell              {vic}
 
 You can customize them:
 >
+  nmap gd     <plug>(unfog-list-done)
+  nmap gD     <plug>(unfog-list-deleted)
   nmap <cr>   <plug>(unfog-toggle)
   nmap K      <plug>(unfog-info)
   nmap gc     <plug>(unfog-context)
@@ -70,7 +73,7 @@ You can customize them:
 ==============================================================================
 LICENSE                                                        *unfog-license*
 
-Copyright (c) 2019 Clément DOUIN <clement.douin@posteo.net>
+Copyright © 2019-2020 Clément DOUIN <clement.douin@posteo.net>
 
 All rights reserved.
 
@@ -104,8 +107,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ==============================================================================
 CONTRIBUTING                                              *unfog-contributing*
 
-Report any bugs here: https://github.com/unfog-io/unfog-vim/issues
-Feel free to submit pull requests: https://github.com/unfog-io/unfog-vim/pulls
+Report any bugs here: https://github.com/soywod/unfog.vim/issues
+Feel free to submit pull requests: https://github.com/soywod/unfog.vim/pulls
 
 1) Git commit messages follow the `Angular Convention` {1}, but contain only a
 subject.
@@ -125,7 +128,7 @@ before proposing a pull request.
 ==============================================================================
 CHANGELOG                                                    *unfog-changelog*
 
-  `Nov. 24, 2019` - First release v0.1.0
+See https://github.com/soywod/unfog.vim/blob/master/CHANGELOG.md.
 
 ==============================================================================
 CREDITS                                                        *unfog-credits*

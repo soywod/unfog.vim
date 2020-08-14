@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0] - 2020-08-14
+
+### Changed
+
+- README's gifs [#9]
+- Adapt v1.0.0 API
+
 ## [0.3.0] - 2019-12-28
 
 ### Added
@@ -37,11 +44,13 @@ First release :tada:
 
 - Clone and adapt from [Kronos.vim](https://github.com/soywod/kronos.vim).
 
-[unreleased]: https://github.com/unfog-io/unfog-vim/compare/v0.3.0...HEAD
-[0.3.0]: https://github.com/unfog-io/unfog-vim/compare/v0.2.0...v0.3.0
-[0.2.0]: https://github.com/unfog-io/unfog-vim/compare/v0.1.0...v0.2.0
-[0.1.0]: https://github.com/unfog-io/unfog-vim/releases/tag/v0.1.0
+[unreleased]: https://github.com/soywod/unfog.vim/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/soywod/unfog.vim/compare/v0.3.0...v1.0.0
+[0.3.0]: https://github.com/soywod/unfog.vim/compare/v0.2.0...v0.3.0
+[0.2.0]: https://github.com/soywod/unfog.vim/compare/v0.1.0...v0.2.0
+[0.1.0]: https://github.com/soywod/unfog.vim/releases/tag/v0.1.0
 
-[#2]: https://github.com/unfog-io/unfog-vim/issues/2
-[#4]: https://github.com/unfog-io/unfog-vim/issues/4
-[#6]: https://github.com/unfog-io/unfog-vim/issues/6
+[#2]: https://github.com/soywod/unfog.vim/issues/2
+[#4]: https://github.com/soywod/unfog.vim/issues/4
+[#6]: https://github.com/soywod/unfog.vim/issues/6
+[#9]: https://github.com/soywod/unfog.vim/issues/9

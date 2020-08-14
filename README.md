@@ -1,9 +1,9 @@
-# ⌚ Unfog.vim [![ko-fi](https://img.shields.io/badge/ko--fi-Buy%20me%20a%20coffee!-red)](https://ko-fi.com/soywod#linkModal)
+# ⏱ Unfog.vim
 
-A Vim plugin for [Unfog](https://github.com/unfog-io/unfog-cli), a simple task
-and time manager written in [Haskell](https://www.haskell.org).
+Vim plugin for [Unfog](https://github.com/soywod/unfog), the minimalist
+task & time manager written in [Haskell](https://www.haskell.org).
 
-![image](https://user-images.githubusercontent.com/10437171/69494189-cd56a380-0eb8-11ea-9b9c-b7a441d6e941.png)
+![image](https://user-images.githubusercontent.com/10437171/89771094-1199da80-db00-11ea-8e65-12da9ec4161a.png)
 
 ## Table of contents
 
@@ -13,28 +13,28 @@ and time manager written in [Haskell](https://www.haskell.org).
     * [Info](#info)
     * [Edit](#edit)
     * [Toggle](#toggle)
-    * [Done/Delete](#donedelete)
+    * [Done](#done)
     * [Context](#context)
     * [Worktime](#worktime)
   * [Mappings](#mappings)
   * [Contributing](#contributing)
-  * [Changelog](https://github.com/unfog-io/unfog-vim/blob/master/CHANGELOG.md#changelog)
+  * [Changelog](https://github.com/soywod/unfog.vim/blob/master/CHANGELOG.md#changelog)
   * [Credits](#credits)
 
 ## Installation
 
 First you need to install the [unfog
-CLI](https://github.com/unfog-io/unfog-cli#installation):
+CLI](https://github.com/soywod/unfog#installation):
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/unfog-io/unfog-cli/master/install.sh | sh
+curl -sSL https://raw.githubusercontent.com/soywod/unfog/master/install.sh | sh
 ```
 
 Then you can install this plugin with your favorite plugin manager. For eg:
 with [vim-plug](https://github.com/junegunn/vim-plug), add to your `.vimrc`:
 
 ```viml
-Plug "unfog-io/unfog-vim"
+Plug "soywod/unfog.vim"
 ```
 
 Then:
@@ -46,7 +46,7 @@ Then:
 ## Usage
 
 It is recommanded to first read [the Unfog CLI
-documentation](https://github.com/unfog-io/unfog-cli#usage) to understand the
+documentation](https://github.com/soywod/unfog#usage) to understand the
 concept.
 
 To list tasks:
@@ -61,39 +61,39 @@ section for special actions.
 
 ### Add
 
-![gif](https://user-images.githubusercontent.com/10437171/69496343-8d4fea80-0ed1-11ea-8dc0-bea520390104.gif)
+![gif](https://user-images.githubusercontent.com/10437171/90293908-7a2ce280-de85-11ea-9bc6-ee4440f17abd.gif)
 
 ### Info
 
 Default mapping: [`K`](#mappings) (Shift-k).
 
-![gif](https://user-images.githubusercontent.com/10437171/69496439-84134d80-0ed2-11ea-9737-64e4ac11c88c.gif)
+![gif](https://user-images.githubusercontent.com/10437171/90294136-0212ec80-de86-11ea-9621-041eb7586ff8.gif)
 
 ### Edit
 
-![gif](https://user-images.githubusercontent.com/10437171/69496694-069d0c80-0ed5-11ea-8d54-9c06aeaead4c.gif)
+![gif](https://user-images.githubusercontent.com/10437171/90294280-58802b00-de86-11ea-8b43-7829d1ec334d.gif)
 
 ### Toggle
 
 Default mapping: [`<CR>`](#mappings) (Enter).
 
-![gif](https://user-images.githubusercontent.com/10437171/69496733-6a273a00-0ed5-11ea-85a3-8afdde52511c.gif)
+![gif](https://user-images.githubusercontent.com/10437171/90294511-e8be7000-de86-11ea-8d45-da0810474074.gif)
 
-### Done/Delete
+### Done
 
-![gif](https://user-images.githubusercontent.com/10437171/69496764-b8d4d400-0ed5-11ea-97fb-d8799f961c62.gif)
+![gif](https://user-images.githubusercontent.com/10437171/90294634-2de2a200-de87-11ea-8efe-462c9c6e39bf.gif)
 
 ### Context
 
 Default mapping: [`gc`](#mappings) (Go to Context).
 
-![gif](https://user-images.githubusercontent.com/10437171/71114883-0c82c680-21d1-11ea-8921-2f2bb4d479ab.gif)
+![gif](https://user-images.githubusercontent.com/10437171/90294906-e14b9680-de87-11ea-8de3-46848a99763c.gif)
 
 ### Worktime
 
 Default mapping: [`gw`](#mappings) (Go to Worktime).
 
-![gif](https://user-images.githubusercontent.com/10437171/69496824-91cad200-0ed6-11ea-9da5-b21b6c1f3390.gif)
+![gif](https://user-images.githubusercontent.com/10437171/90295164-81092480-de88-11ea-88b6-d4cf990cc6e7.gif)
 
 ## Mappings
 
@@ -101,7 +101,9 @@ Here the default mappings:
 
 | Function | Mapping |
 | --- | --- |
-| Toggle task | `<CR>` |
+| List done tasks | `gd` |
+| List deleted tasks | `gD` |
+| [Toggle task](#toggle) | `<CR>` |
 | [Show task infos](#show) | `K` |
 | [Set context](#context) | `gc` |
 | [Show worktime](#worktime) | `gw` |
@@ -114,6 +116,8 @@ Here the default mappings:
 You can customize them:
 
 ```vim
+nmap gd     <plug>(unfog-list-done)
+nmap gD     <plug>(unfog-list-deleted)
 nmap <cr>   <plug>(unfog-toggle)
 nmap K      <plug>(unfog-info)
 nmap gc     <plug>(unfog-context)
