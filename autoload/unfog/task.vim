@@ -2,61 +2,67 @@ function! s:exec(cmd, args)
   let cmd = call("printf", [a:cmd] + a:args)
   let result = eval(system(cmd))
 
-  if result.ok
-    return result.data
-  else
-    throw result.data
+  if result.success == 0
+    throw result.message
   endif
+
+  return result
 endfunction
 
-function! unfog#task#show(id)
-  return s:exec("unfog info %s --json", [a:id])
+function! unfog#task#info(id)
+  return s:exec("unfog info %s --json", [shellescape(a:id)]).task
 endfunction
 
 function! unfog#task#list()
-  return s:exec("unfog list --json", [])
+  return s:exec("unfog list --json", []).tasks
 endfunction
 
-function! unfog#task#create(task)
-  let tags = join(map(a:task.tags, "'+' . v:val"), " ")
-  return s:exec("unfog add %s %s --json", [shellescape(a:task.desc), tags])
+function! unfog#task#list_done()
+  return s:exec("unfog list --done --json", []).tasks
 endfunction
 
-function! unfog#task#replace(task)
-  let tags = join(map(a:task.tags, "'+' . v:val"), " ")
-  return s:exec("unfog set %d %s %s --json", [a:task.id, shellescape(a:task.desc), tags])
+function! unfog#task#list_deleted()
+  return s:exec("unfog list --deleted --json", []).tasks
+endfunction
+
+function! unfog#task#add(task)
+  let desc = shellescape(a:task.desc)
+  let proj = shellescape(a:task.project)
+  let due = shellescape(a:task.due)
+
+  return s:exec("unfog add %s --project %s --due %s --json", [desc, proj, due]).message
+endfunction
+
+function! unfog#task#edit(task)
+  let args = [a:task.id]
+  if !empty(a:task.desc) | call add(args, shellescape(a:task.desc)) | endif
+  if !empty(a:task.project) | call add(args, "--project " . shellescape(a:task.project)) | endif
+  if !empty(a:task.due) | call add(args, "--due " . shellescape(a:task.due)) | endif
+
+  return s:exec("unfog edit %s --json", [join(args, " ")]).message
 endfunction
 
 function! unfog#task#toggle(id)
-  return s:exec("unfog toggle %d --json", [a:id])
+  return s:exec("unfog toggle %s --json", [shellescape(a:id)]).message
 endfunction
 
-function! unfog#task#remove(id)
-  return s:exec("unfog remove %d --json", [a:id])
+function! unfog#task#do(id)
+  return s:exec("unfog do %s --json", [shellescape(a:id)]).message
 endfunction
 
 function! unfog#task#context(context)
-  return s:exec("unfog context %s --json", [a:context])
+  return s:exec("unfog context %s --json", [a:context]).message
 endfunction
 
-function! unfog#task#worktime(tags)
-  return s:exec("unfog worktime %s --json", [a:tags])
-endfunction
-
-function! unfog#task#format_for_show(task)
-  let task = copy(a:task)
-  let task.tags     = join(task.tags, " ")
-  let task.active = empty(task.active.micro) ? "" : task.active.human
-  let task.due = empty(task.due.micro) ? "" : task.due.human
-  let task.wtime = empty(task.wtime.micro) ? "" : task.wtime.human
-  return task
+function! unfog#task#worktime(proj)
+  return s:exec("unfog worktime %s --json", [shellescape(a:proj)])
 endfunction
 
 function! unfog#task#format_for_list(task)
   let task = copy(a:task)
-  let task.tags     = join(task.tags, " ")
   let task.active = empty(task.active.micro) ? "" : task.active.approx
   let task.due = empty(task.due.micro) ? "" : task.due.approx
-  let task.wtime = empty(task.wtime.micro) ? "" : task.wtime.approx
+  let task.worktime = empty(task.worktime.micro) ? "" : task.worktime.approx
+
   return task
 endfunction
