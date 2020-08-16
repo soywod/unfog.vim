@@ -54,6 +54,10 @@ function! unfog#task#context(context)
   return s:exec("unfog context %s --json", [a:context]).message
 endfunction
 
+function! unfog#task#context_completion()
+  return filter(systemlist("unfog --bash-completion-index 2 --bash-completion-word unfog --bash-completion-word context"), "match(v:val, '^-') == -1")
+endfunction
+
 function! unfog#task#worktime(proj)
   return s:exec("unfog worktime %s --json", [shellescape(a:proj)])
 endfunction

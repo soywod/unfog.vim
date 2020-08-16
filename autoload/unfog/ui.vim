@@ -139,9 +139,13 @@ endfunction
 
 " ------------------------------------------------------------------ # Context #
 
+function! unfog#ui#context_completion(val, cmdline, curpos)
+  return filter(unfog#task#context_completion(), "stridx(v:val, a:val) > -1")
+endfunction
+
 function! unfog#ui#context()
   try
-    let ctx = input('Go to context: ')
+    let ctx = input("Go to context: ", "", "customlist,unfog#ui#context_completion")
     let msg = unfog#task#context(ctx)
     call unfog#ui#list()
     call s:print_msg(msg)
@@ -154,7 +158,7 @@ endfunction
 
 function! unfog#ui#worktime()
   try
-    let proj = input('Worktime for: ')
+    let proj = input("Worktime for: ", "", "customlist,unfog#ui#context_completion")
     let wtimes = unfog#task#worktime(proj)
     let wtimes_lines = map(
       \copy(wtimes.worktimes),
