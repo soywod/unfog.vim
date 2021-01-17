@@ -1,7 +1,6 @@
 # ⏱ Unfog.vim
 
-Vim plugin for [Unfog](https://github.com/soywod/unfog), the minimalist
-task & time manager written in [Haskell](https://www.haskell.org).
+Vim plugin for [Unfog](https://github.com/soywod/unfog) CLI task & time manager.
 
 ![image](https://user-images.githubusercontent.com/10437171/89771094-1199da80-db00-11ea-8e65-12da9ec4161a.png)
 
