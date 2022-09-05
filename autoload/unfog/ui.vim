@@ -291,27 +291,24 @@ function! s:parse_args(args)
   let args = split(a:args, ' ')
 
   let idx = 0
-  let desc = []
-  let project = ""
-  let due = ""
+  let iidx = 0
+  let output = [[], [], []]
 
   while idx < len(args)
     let arg = args[idx]
 
     if arg == "-p" || arg == "--project"
-      let project = get(args, idx + 1, "")
-      let idx = idx + 1
+      let iidx = iidx + 1
     elseif arg == "-d" || arg == "--due"
-      let due = get(args, idx + 1, "")
-      let idx = idx + 1
+      let iidx = iidx + 1
     else
-      call add(desc, arg)
+      call add(output[iidx], arg)
     endif
 
     let idx = idx + 1
   endwhile
 
-  return [join(desc, ' '), project, due]
+  return [join(output[0], ' '), join(output[1], ' '), join(output[2], ' ')]
 endfunction
 
 " ------------------------------------------------------------------ # Renders #
