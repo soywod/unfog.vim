@@ -298,9 +298,9 @@ function! s:parse_args(args)
     let arg = args[idx]
 
     if arg == "-p" || arg == "--project"
-      let iidx = iidx + 1
+      let iidx = 1
     elseif arg == "-d" || arg == "--due"
-      let iidx = iidx + 1
+      let iidx = 2
     else
       call add(output[iidx], arg)
     endif
