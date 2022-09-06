@@ -288,7 +288,8 @@ function! s:uniq_by_id(a, b)
 endfunction
 
 function! s:parse_args(args)
-  let args = split(a:args, ' ')
+  let args = substitute(a:args, '\v([''"])(.{-})\1', '\=substitute(submatch(0), " ", "@", "g")', "g")
+  let args = split(args, ' ')
 
   let idx = 0
   let desc = []
@@ -300,9 +301,13 @@ function! s:parse_args(args)
 
     if arg == "-p" || arg == "--project"
       let project = get(args, idx + 1, "")
+      let project = substitute(project, "@", " ", "g")
+      let project = substitute(project, '[''"]', "", "g")
       let idx = idx + 1
     elseif arg == "-d" || arg == "--due"
       let due = get(args, idx + 1, "")
+      let due = substitute(due, "@", " ", "g")
+      let due = substitute(due, '[''"]', "", "g")
       let idx = idx + 1
     else
       call add(desc, arg)
@@ -312,6 +317,7 @@ function! s:parse_args(args)
   endwhile
 
   return [join(desc, ' '), project, due]
+
 endfunction
 
 " ------------------------------------------------------------------ # Renders #
